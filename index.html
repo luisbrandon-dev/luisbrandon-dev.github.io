@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Okaun Saves the Game!</title>
+    <link
+      rel="icon"
+      href="https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/4/49/Okaun_and_Zndrsplt.jpg/revision/latest/scale-to-width-down/250?cb=20240622221614.png"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Spectral:wght@400;600&display=swap");
+    </style>
+    <style>
+      html {
+        height: 100vh;
+        width: 100vw;
+        padding: 0;
+        margin: 0;
+        font-family: "Spectral", serif;
+        background: linear-gradient(
+          135deg,
+          #1a1a2e 0%,
+          #16213e 50%,
+          #0f3460 100%
+        );
+        background-attachment: fixed;
+      }
+
+      #mainContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-content: center;
+        padding: 25px;
+      }
+
+      #headerContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      #coinSelectorForm {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+      }
+
+      .coinLabel {
+        display: block;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .coinImage {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+      }
+
+      input[type="radio"]:checked + .coinLabel .coinImage {
+        box-shadow: 0 0 20px 5px rgba(0, 123, 255, 0.6);
+        transform: scale(1.05);
+      }
+
+      .coinLabel:hover .coinImage {
+        transform: scale(1.02);
+        box-shadow: 0 0 10px 2px rgba(0, 123, 255, 0.3);
+      }
+
+      #sectionContainer {
+        padding-top: 15px;
+        padding-bottom: 20px;
+        font-weight: bold;
+      }
+
+      #flipCoinContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-content: center;
+        gap: 25px;
+        padding-bottom: 10px;
+      }
+
+      #flipCoinContainer div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        align-content: center;
+        justify-content: space-between;
+        gap: 50px;
+      }
+
+      #flipCoinContainer div button {
+        width: 150px;
+        height: 50px;
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      #flipCoinContainer div button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+      }
+
+      #flipCoinContainer div button:active {
+        transform: translateY(0);
+      }
+
+      #flipCoinContainer div input {
+        width: 145px;
+        height: 45px;
+        font-size: 24px;
+        text-align: center;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+      }
+
+      #okaunStatsContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-content: center;
+        gap: 10px;
+        color: "white" !important;
+      }
+
+      #okaunStatsContainer span {
+        color: "white";
+      }
+
+      #okaunStatsContainer div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        align-content: center;
+        justify-content: space-around;
+        gap: 20px;
+      }
+
+      #okaunStatsContainer div span {
+        font-size: 32px;
+        font-weight: bold;
+      }
+
+      #okaunStatsContainer div input {
+        width: 145px;
+        height: 35px;
+        font-size: 24px;
+        text-align: center;
+        border: 2px solid #28a745;
+        border-radius: 8px;
+      }
+
+      #resultsOfCoinFlip {
+        background: #f8f9fa;
+        border: 2px solid #dee2e6;
+        border-radius: px;
+        padding: 20px;
+        margin: 20px 0;
+        max-width: 600px;
+        width: 100%;
+        max-height: 15vh;
+        overflow-y: auto;
+      }
+
+      .flip-result {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 8px;
+        background: white;
+        border-left: 4px solid #007bff;
+        animation: slideIn 0.5s ease-out;
+      }
+
+      .flip-result.win {
+        border-left-color: #28a745;
+        background: #d4edda;
+      }
+
+      .flip-result.lose {
+        border-left-color: #dc3545;
+        background: #f8d7da;
+      }
+
+      #restartOkaunStatsButton {
+        width: 170px;
+        height: 35px;
+        background: #d0342c;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      #winCounter {
+        font-size: 24px;
+        color: "white";
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes coinFlip {
+        0% {
+          transform: rotateY(0deg);
+        }
+        50% {
+          transform: rotateY(180deg);
+        }
+        100% {
+          transform: rotateY(360deg);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .coin-flipping {
+        animation: coinFlip 1s ease-in-out;
+      }
+
+      .stats-update {
+        animation: pulse 0.6s ease-in-out;
+      }
+
+      #footerContainer {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        padding: 15px 30px;
+        border-radius: 12px;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+      }
+
+      .krark-active {
+        color: #ffc107;
+        font-weight: bold;
+      }
+
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #e9ecef;
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+
+      .checkbox-container input[type="checkbox"] {
+        transform: scale(1.5);
+      }
+    </style>
+  </head>
+  <body>
+    <main id="mainContainer">
+      <header id="headerContainer">
+        <form id="coinSelectorForm">
+          <div>
+            <input
+              type="radio"
+              id="heads"
+              hidden
+              value="heads"
+              name="coin"
+              checked
+            />
+            <label class="coinLabel" for="heads"
+              ><img
+                class="coinImage"
+                src="https://images.vexels.com/media/users/3/264562/isolated/preview/8375d1f866b5bd841b3cf1befaf78087-coin-illustration-nickel-head.png"
+            /></label>
+          </div>
+          <div>
+            <input type="radio" id="tails" hidden value="tails" name="coin" />
+            <label for="tails" class="coinLabel"
+              ><img
+                class="coinImage"
+                src="https://images.vexels.com/media/users/3/264592/isolated/preview/44f520a5ca58fad914521d7c8c3221f9-quarter-stroke-coin-tail.png"
+            /></label>
+          </div>
+        </form>
+      </header>
+
+      <section id="sectionContainer">
+        <form id="krarkThumbForm" class="checkbox-container">
+          <input type="checkbox" id="krarkThumb" name="krarkThumb" value="1" />
+          <label class="krarkLabelForm"> Is Krark's Thumb in play? </label>
+        </form>
+      </section>
+
+      <section id="flipCoinContainer">
+        <div>
+          <button id="flip1">Flip 1 coin</button>
+          <button id="flip2">Flip 2 coins</button>
+        </div>
+        <div>
+          <input type="number" value="3" min="1" id="numberOfCoinsToFlip" />
+          <button id="flipX">Flip 3 coins</button>
+        </div>
+        <div>
+          <button id="flipUntilLose">Flip coin until lose</button>
+        </div>
+      </section>
+      <span id="winCounter" style="color: white">0 Wins</span>
+      <div id="resultsOfCoinFlip"></div>
+
+      <section id="okaunStatsContainer">
+        <span style="color: white"> Okaun stats </span>
+        <div>
+          <input type="number" value="3" min="1" id="okaunPower" />
+          <span style="color: white">/</span>
+          <input type="number" value="3" min="1" id="okaunToughness" />
+        </div>
+        <div>
+          <button id="restartOkaunStatsButton">Restart Okaun Stats</button>
+        </div>
+      </section>
+    </main>
+    <script>
+      let totalWins = 0;
+      let basePower = 3;
+      let baseToughness = 3;
+
+      function getSelectedCoin() {
+        return document.querySelector('input[name="coin"]:checked').value;
+      }
+
+      function isKrarkThumbActive() {
+        return document.getElementById("krarkThumb").checked;
+      }
+
+      function flipSingleCoin() {
+        return Math.random() < 0.5 ? "heads" : "tails";
+      }
+
+      function performCoinFlip() {
+        const selectedCoin = getSelectedCoin();
+        const krarkActive = isKrarkThumbActive();
+
+        if (krarkActive) {
+          const flip1 = flipSingleCoin();
+          const flip2 = flipSingleCoin();
+
+          // Con Krark's Thumb, puedes elegir el resultado que quieras
+          // PERO si ambas tiradas son lo contrario a lo que quieres, pierdes
+          const hasWantedResult =
+            flip1 === selectedCoin || flip2 === selectedCoin;
+
+          if (hasWantedResult) {
+            // Si al menos una tirada es lo que queremos, ganamos
+            return {
+              result: selectedCoin,
+              flips: [flip1, flip2],
+              krarkUsed: true,
+            };
+          } else {
+            // Si ambas tiradas son lo contrario, perdemos
+            const oppositeResult = selectedCoin === "heads" ? "tails" : "heads";
+            return {
+              result: oppositeResult,
+              flips: [flip1, flip2],
+              krarkUsed: true,
+            };
+          }
+        } else {
+          const flip = flipSingleCoin();
+          return {
+            result: flip,
+            flips: [flip],
+            krarkUsed: false,
+          };
+        }
+      }
+
+      function updateStats() {
+        const currentPower = basePower * Math.pow(2, totalWins);
+        const currentToughness = baseToughness * Math.pow(2, totalWins);
+
+        document.getElementById("okaunPower").value = currentPower;
+        document.getElementById("okaunToughness").value = currentToughness;
+        document.getElementById("winCounter").textContent = `${totalWins} Wins`;
+
+        const statsContainer = document.getElementById("okaunStatsContainer");
+        statsContainer.classList.add("stats-update");
+        setTimeout(() => statsContainer.classList.remove("stats-update"), 600);
+      }
+
+      function addResultToDisplay(flipNumber, flipData, won) {
+        const resultsContainer = document.getElementById("resultsOfCoinFlip");
+        const resultDiv = document.createElement("div");
+        resultDiv.className = `flip-result ${won ? "win" : "lose"}`;
+
+        const selectedCoin = getSelectedCoin();
+        const krarkInfo = flipData.krarkUsed
+          ? ` <span class="krark-active">[Krark's Thumb: ${flipData.flips.join(
+              ", "
+            )}]</span>`
+          : "";
+
+        resultDiv.innerHTML = `
+          <strong>Flip ${flipNumber}:</strong> ${flipData.result} 
+          (wanted: ${selectedCoin}) ${won ? "✓" : "✗"}${krarkInfo}
+        `;
+
+        resultsContainer.insertBefore(resultDiv, resultsContainer.firstChild);
+
+        // Limitar a 10 resultados mostrados
+        while (resultsContainer.children.length > 10) {
+          resultsContainer.removeChild(resultsContainer.lastChild);
+        }
+      }
+
+      function animateCoinFlip() {
+        const selectedCoinElement = document.querySelector(
+          'input[name="coin"]:checked + .coinLabel .coinImage'
+        );
+        selectedCoinElement.classList.add("coin-flipping");
+        setTimeout(
+          () => selectedCoinElement.classList.remove("coin-flipping"),
+          1000
+        );
+      }
+
+      function flipCoin(times) {
+        const selectedCoin = getSelectedCoin();
+        let wins = 0;
+
+        totalWins = 0;
+
+        animateCoinFlip();
+
+        for (let i = 1; i <= times; i++) {
+          const flipData = performCoinFlip();
+          const won = flipData.result === selectedCoin;
+
+          if (won) {
+            wins++;
+            totalWins++;
+          }
+
+          addResultToDisplay(i, flipData, won);
+        }
+
+        updateStats();
+      }
+
+      function flipUntilLose() {
+        const selectedCoin = getSelectedCoin();
+        let flips = 0;
+        let continueFlipping = true;
+
+        totalWins = 0;
+
+        animateCoinFlip();
+
+        while (continueFlipping) {
+          flips++;
+          const flipData = performCoinFlip();
+          const won = flipData.result === selectedCoin;
+
+          if (won) {
+            totalWins++;
+          } else {
+            continueFlipping = false; // Dejar de tirar cuando perdamos
+          }
+
+          addResultToDisplay(flips, flipData, won);
+        }
+
+        updateStats();
+      }
+
+      function updateFlipXButton() {
+        const value = parseInt(
+          document.getElementById("numberOfCoinsToFlip").value,
+          10
+        );
+        const button = document.getElementById("flipX");
+        if (!isNaN(value) && value > 0) {
+          button.textContent = `Flip ${value} coin${value === 1 ? "" : "s"}`;
+        } else {
+          button.textContent = "Flip X coins";
+        }
+      }
+
+      function restartOkaunStats() {
+        basePower = 3;
+        baseToughness = 3;
+        document.getElementById("okaunPower").value = basePower;
+        document.getElementById("okaunToughness").value = baseToughness;
+      }
+
+      // Event listeners
+      document
+        .getElementById("flip1")
+        .addEventListener("click", () => flipCoin(1));
+      document
+        .getElementById("flip2")
+        .addEventListener("click", () => flipCoin(2));
+      document.getElementById("flipX").addEventListener("click", () => {
+        const number = parseInt(
+          document.getElementById("numberOfCoinsToFlip").value,
+          10
+        );
+        if (!isNaN(number) && number > 0) {
+          flipCoin(number);
+        } else {
+          alert("Please enter a valid number of coins to flip.");
+        }
+      });
+      document
+        .getElementById("flipUntilLose")
+        .addEventListener("click", flipUntilLose);
+      document
+        .getElementById("numberOfCoinsToFlip")
+        .addEventListener("input", updateFlipXButton);
+
+      // Reset stats when base stats change
+      document.getElementById("okaunPower").addEventListener("input", (e) => {
+        basePower = parseInt(e.target.value) || 3;
+        updateStats();
+      });
+      document
+        .getElementById("okaunToughness")
+        .addEventListener("input", (e) => {
+          baseToughness = parseInt(e.target.value) || 3;
+          updateStats();
+        });
+
+      document
+        .getElementById("restartOkaunStatsButton")
+        .addEventListener("click", restartOkaunStats);
+
+      // Initialize
+      window.addEventListener("DOMContentLoaded", () => {
+        updateFlipXButton();
+        updateStats();
+      });
+    </script>
+  </body>
+</html>
